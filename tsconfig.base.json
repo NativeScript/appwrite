@@ -21,7 +21,8 @@
     ],
     "paths": {
       "@demo/shared": ["tools/demo/index.ts"],
-      "@nativescript/*": ["packages/*"]
+      "@nativescript/*": ["packages/*"],
+      "@nativescript/appwrite": ["packages/appwrite/index.d.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

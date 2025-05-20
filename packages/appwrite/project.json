@@ -1,0 +1,65 @@
+{
+  "name": "appwrite",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "packages/appwrite",
+  "targets": {
+    "build": {
+      "executor": "@nx/js:tsc",
+      "options": {
+        "outputPath": "dist/packages/appwrite",
+        "tsConfig": "packages/appwrite/tsconfig.json",
+        "packageJson": "packages/appwrite/package.json",
+        "main": "packages/appwrite/index.d.ts",
+        "assets": [
+          "packages/appwrite/*.md",
+          "packages/appwrite/index.d.ts",
+          "LICENSE",
+          {
+            "glob": "**/*",
+            "input": "packages/appwrite/platforms/",
+            "output": "./platforms/"
+          }
+        ],
+        "dependsOn": [
+          {
+            "target": "build.all",
+            "projects": "dependencies"
+          }
+        ]
+      }
+    },
+    "build.all": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["node tools/scripts/build-finish.ts appwrite"],
+        "parallel": false
+      },
+      "outputs": ["{workspaceRoot}/dist/packages/appwrite"],
+      "dependsOn": [
+        {
+          "target": "build.all",
+          "projects": "dependencies"
+        },
+        {
+          "target": "build",
+          "projects": "self"
+        }
+      ]
+    },
+    "focus": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx g @nativescript/plugin-tools:focus-packages appwrite"],
+        "parallel": false
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:eslint",
+      "options": {
+        "lintFilePatterns": ["packages/appwrite/**/*.ts"]
+      }
+    }
+  },
+  "tags": []
+}

@@ -6,7 +6,8 @@
     "paths": {
       "~/*": ["src/*"],
       "@demo/shared": ["../../tools/demo/index.ts"],
-      "@nativescript/*": ["../../packages/*"]
+      "@nativescript/*": ["../../packages/*"],
+      "@nativescript/appwrite": ["../../packages/appwrite/index.d.ts"]
     }
   }
 }

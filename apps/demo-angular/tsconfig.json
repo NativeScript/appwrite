@@ -4,7 +4,8 @@
     "paths": {
       "~/*": ["src/*"],
       "@demo/shared": ["tools/demo/index.ts"],
-      "@nativescript/*": ["../../dist/packages/*"]
+      "@nativescript/*": ["../../dist/packages/*"],
+      "@nativescript/appwrite": ["../../packages/appwrite/index.d.ts"]
     }
   },
   "files": ["./references.d.ts", "./src/main.ts", "./src/polyfills.ts"],

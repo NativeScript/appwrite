@@ -5,7 +5,7 @@ npm run setup
 npm start
 ```
 
-- @nativescript
+- [@nativescript/appwrite](packages/appwrite/README.md)
 
 # How to use?
 
