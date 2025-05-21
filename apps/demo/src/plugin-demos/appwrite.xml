@@ -6,7 +6,9 @@
     <StackLayout class="p-20">
         <ScrollView class="h-full">
           <StackLayout>
-            <Button text="Test appwrite" tap="{{ testIt }}" class="btn btn-primary rounded"/>
+            <Button text="Create Account" tap="{{ demoCreateAccount }}" class="btn btn-primary rounded"/>
+            <Button text="Login" tap="{{ demoLogin }}" class="btn btn-primary rounded"/>
+            <Button text="Logout" tap="{{ demoLogout }}" class="btn btn-primary rounded"/>
 
           </StackLayout>
         </ScrollView>

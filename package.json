@@ -32,6 +32,7 @@
     "@nativescript/types": "~8.9.0",
     "@nativescript/webpack": "~5.0.22",
     "@ngtools/webpack": "^19.0.0",
+    "dotenv": "^16.5.0",
     "husky": "~9.0.0",
     "ng-packagr": "^19.0.0",
     "rxjs": "~7.8.0",

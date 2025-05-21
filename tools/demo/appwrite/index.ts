@@ -7,8 +7,12 @@ export class DemoSharedAppwrite extends DemoSharedBase {
 
   constructor() {
     super();
-    this.client = new Client().setEndpoint('https://<REGION>.cloud.appwrite.io/v1').setProject('<PROJECT_ID>');
+    this.client = new Client().setEndpoint(process.env.APP_WRITE_ENDPOINT).setProject(process.env.APP_WRITE_PROJECT_ID).setSelfSigned(true);
     this.account = new Account(this.client);
+  }
+
+  demoCreateAccount() {
+    this.createAccount('test@example.com', 'password');
   }
 
   async createAccount(email: string, password: string) {
@@ -20,6 +24,10 @@ export class DemoSharedAppwrite extends DemoSharedBase {
     }
   }
 
+  demoLogin() {
+    this.login('test@example.com', 'password');
+  }
+
   async login(email: string, password: string) {
     try {
       const response = await this.account.createEmailPasswordSession(email, password);
@@ -27,6 +35,10 @@ export class DemoSharedAppwrite extends DemoSharedBase {
     } catch (error) {
       console.error('Error logging in:', error);
     }
+  }
+
+  demoLogout() {
+    this.logout();
   }
 
   async logout() {
