@@ -33,6 +33,45 @@ public class NSCAppwriteFunctions: NSObject {
 
 
 @objcMembers
+@objc(NSCAppwriteDocument)
+public class NSCAppwriteDocument: NSObject {
+  internal var document: Document<[String: AnyCodable]>!
+  
+  init(document: Document<[String: AnyCodable]>) {
+    self.document = document
+  }
+  
+  public var id: String {
+    return document.id
+  }
+
+  public var collectionId: String {
+    return document.collectionId
+  }
+
+  public var databaseId: String {
+    return document.databaseId
+  }
+
+  public var createdAt: String {
+    return document.createdAt
+  }
+
+  public var updatedAt: String {
+    return document.updatedAt
+  }
+
+  public var permissions: [String] {
+    return document.permissions
+  }
+
+  public var data: NSDictionary {
+    return NSDictionary(dictionary: document.data)
+  }
+}
+
+
+@objcMembers
 @objc(NSCAppwriteDatabases)
 public class NSCAppwriteDatabases: NSObject {
   internal var databases: Databases!
@@ -40,7 +79,72 @@ public class NSCAppwriteDatabases: NSObject {
   init(_ client: NSCAppwriteClient) {
     self.databases = Databases(client.client)
   }
+  
+  public func createDocument(_ databaseId: String, _ collectionId: String, _ documentId: String, _ data: [String: AnyHashable], _ permissions: [String]? = nil, _ callback: @escaping (NSCAppwriteDocument?, Error?) -> Void){
+    Task {
+      do {
+        let document = try await databases.createDocument(databaseId: databaseId, collectionId: collectionId, documentId: documentId, data: data, permissions: permissions)
+        callback(NSCAppwriteDocument(document: document), nil)
+      }catch {
+        callback(nil, error)
+      }
+    }
+  }
+  
+  public func getDocument(_ databaseId: String, _ collectionId: String, _ documentId: String, _ queries: [String]? = nil, _ callback: @escaping (NSCAppwriteDocument?, Error?) -> Void){
+    Task {
+      
+      do {
+        let document = try await databases.getDocument(databaseId: databaseId, collectionId: collectionId, documentId: documentId, queries: queries)
+        callback(NSCAppwriteDocument(document: document), nil)
+      }catch {
+        callback(nil, error)
+      }
+    }
+  }
+  
+  
+  public func listDocuments(_ databaseId: String, _ collectionId: String, _ queries: [String]? = nil, _ callback: @escaping ([NSCAppwriteDocument]?, Error?) -> Void){
+    Task {
+      
+      do {
+        let list = try await databases.listDocuments(databaseId: databaseId, collectionId: collectionId, queries: queries)
+        callback(list.documents.map { NSCAppwriteDocument(document: $0) }, nil)
+      }catch {
+        callback(nil, error)
+      }
+    }
+  }
+  
+  
+  
+  public func updateDocument(_ databaseId: String, _ collectionId: String, _ documentId: String, _ data: [String: AnyHashable], _ permissions: [String]? = nil, _ callback: @escaping (NSCAppwriteDocument?, Error?) -> Void){
+    Task {
+      do {
+        let document = try await databases.updateDocument(databaseId: databaseId, collectionId: collectionId, documentId: documentId, data: data, permissions: permissions)
+        callback(NSCAppwriteDocument(document: document), nil)
+      }catch {
+        callback(nil, error)
+      }
+    }
+  }
+  
+  
+  public func deleteDocument(_ databaseId: String, _ collectionId: String, _ documentId: String, _ callback: @escaping (Error?) -> Void){
+    Task {
+      
+      do {
+        let document = try await databases.deleteDocument(databaseId: databaseId, collectionId: collectionId, documentId: documentId)
+        callback(nil)
+      }catch {
+        callback(error)
+      }
+    }
+  }
+  
+  
 }
+
 
 @objcMembers
 @objc(NSCAppwriteClient)

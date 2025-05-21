@@ -7,9 +7,9 @@ declare class NSCAppwriteAccount extends NSObject {
 
   create(userId: string, email: string, password: string, name: string, callback: (p1: NSCAppwriteUser, p2: NSError) => void): void;
 
-  createEmailPasswordSession(email: string, password: string, callback: (p1: NSCAppwriteSession, p2: NSError) => void): void;
-
   createAnonymousSession(callback: (p1: NSCAppwriteSession, p2: NSError) => void): void;
+
+  createEmailPasswordSession(email: string, password: string, callback: (p1: NSCAppwriteSession, p2: NSError) => void): void;
 
   createSession(userId: string, secret: string, callback: (p1: NSCAppwriteSession, p2: NSError) => void): void;
 
@@ -49,7 +49,37 @@ declare class NSCAppwriteDatabases extends NSObject {
 
   constructor();
 
+  createDocument(databaseId: string, collectionId: string, documentId: string, data: NSDictionary<string, NSObject>, permissions: NSArray<string> | string[], callback: (p1: NSCAppwriteDocument, p2: NSError) => void): void;
+
+  deleteDocument(databaseId: string, collectionId: string, documentId: string, callback: (p1: NSError) => void): void;
+
+  getDocument(databaseId: string, collectionId: string, documentId: string, queries: NSArray<string> | string[], callback: (p1: NSCAppwriteDocument, p2: NSError) => void): void;
+
   init(client: NSCAppwriteClient): this;
+
+  listDocuments(databaseId: string, collectionId: string, queries: NSArray<string> | string[], callback: (p1: NSArray<NSCAppwriteDocument>, p2: NSError) => void): void;
+
+  updateDocument(databaseId: string, collectionId: string, documentId: string, data: NSDictionary<string, NSObject>, permissions: NSArray<string> | string[], callback: (p1: NSCAppwriteDocument, p2: NSError) => void): void;
+}
+
+declare class NSCAppwriteDocument extends NSObject {
+  static alloc(): NSCAppwriteDocument; // inherited from NSObject
+
+  static new(): NSCAppwriteDocument; // inherited from NSObject
+
+  readonly collectionId: string;
+
+  readonly createdAt: string;
+
+  readonly data: NSDictionary<any, any>;
+
+  readonly databaseId: string;
+
+  readonly id: string;
+
+  readonly permissions: NSArray<string>;
+
+  readonly updatedAt: string;
 }
 
 declare class NSCAppwriteFunctions extends NSObject {

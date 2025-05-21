@@ -28,7 +28,7 @@ export declare class ID {
   static unique(): string;
 }
 
-export class Target {
+export declare class Target {
   private constructor();
 
   readonly native: any;
@@ -51,7 +51,7 @@ export class Target {
   readonly userId: string;
 }
 
-export class User {
+export declare class User {
   private constructor();
 
   readonly native: any;
@@ -93,7 +93,7 @@ export class User {
   readonly userHash: string;
 }
 
-export class Account {
+export declare class Account {
   constructor(client: Client);
 
   readonly native: any;
@@ -108,25 +108,65 @@ export class Account {
   deleteSession(sessionId: string): Promise<void>;
 }
 
-export class Databases {
+export declare class Document {
+  private constructor();
+
+  readonly native: any;
+
+  readonly collectionId: string;
+
+  readonly createdAt: string;
+
+  readonly data: NSDictionary<any, any>;
+
+  readonly databaseId: string;
+
+  readonly id: string;
+
+  readonly permissions: NSArray<string>;
+
+  readonly updatedAt: string;
+}
+
+export declare class Databases {
+  constructor(client: Client);
+
+  readonly native: any;
+
+  public createDocument(databaseId: string, collectionId: string, documentId: string): Promise<Document>;
+
+  public createDocument(databaseId: string, collectionId: string, documentId: string, data: Record<string, any>): Promise<Document>;
+
+  public createDocument(databaseId: string, collectionId: string, documentId: string, data: Record<string, any>, permissions: Array<string>): Promise<Document>;
+
+  public getDocument(databaseId: string, collectionId: string, documentId: string): Promise<Document>;
+
+  public getDocument(databaseId: string, collectionId: string, documentId: string, queries: Array<string>): Promise<Document>;
+
+  public listDocuments(databaseId: string, collectionId: string): Promise<Array<Document>>;
+
+  public listDocuments(databaseId: string, collectionId: string, queries: Array<string> = []): Promise<Array<Document>>;
+
+  public updateDocument(databaseId: string, collectionId: string, documentId: string, data: Record<string, any>): Promise<Document>;
+
+  public updateDocument(databaseId: string, collectionId: string, documentId: string, data: Record<string, any>, permissions: Array<string>): Promise<Document>;
+
+  public deleteDocument(databaseId: string, collectionId: string, documentId: string): Promise<void>;
+}
+
+export declare class Functions {
   constructor(client: Client);
 
   readonly native: any;
 }
 
-export class Functions {
+export declare class Storage {
   constructor(client: Client);
 
   readonly native: any;
 }
 
-export class Storage {
-  constructor(client: Client);
-
-  readonly native: any;
-}
-
-export class Session {
+export declare class Session {
   private constructor();
 
   readonly native: any;

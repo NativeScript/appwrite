@@ -32,9 +32,24 @@ declare module org {
   export module nativescript {
     export module plugins {
       export module appwrite {
-        export class Client {
-          public static class: java.lang.Class<org.nativescript.plugins.appwrite.Client>;
+        export class Databases {
+          public static class: java.lang.Class<org.nativescript.plugins.appwrite.Databases>;
+          public static deleteDocument(databases: io.appwrite.services.Databases, databaseId: string, collectionId: string, documentId: string, callback: any): void;
+          public static createDocument(databases: io.appwrite.services.Databases, databaseId: string, collectionId: string, documentId: string, data: java.util.Map<string, any>, permissions: java.util.List<string>, callback: any): void;
+          public static updateDocument(databases: io.appwrite.services.Databases, databaseId: string, collectionId: string, documentId: string, data: java.util.Map<string, any>, permissions: java.util.List<string>, callback: any): void;
           public constructor();
+          public static listDocuments(databases: io.appwrite.services.Databases, databaseId: string, collectionId: string, queries: java.util.List<string>, callback: any): void;
+          public static getDocument(databases: io.appwrite.services.Databases, databaseId: string, collectionId: string, documentId: string, queries: java.util.List<string>, callback: any): void;
+        }
+        export module Databases {
+          export class Companion {
+            public static class: java.lang.Class<org.nativescript.plugins.appwrite.Databases.Companion>;
+            public createDocument(databases: io.appwrite.services.Databases, databaseId: string, collectionId: string, documentId: string, data: java.util.Map<string, any>, permissions: java.util.List<string>, callback: any): void;
+            public updateDocument(databases: io.appwrite.services.Databases, databaseId: string, collectionId: string, documentId: string, data: java.util.Map<string, any>, permissions: java.util.List<string>, callback: any): void;
+            public deleteDocument(databases: io.appwrite.services.Databases, databaseId: string, collectionId: string, documentId: string, callback: any): void;
+            public getDocument(databases: io.appwrite.services.Databases, databaseId: string, collectionId: string, documentId: string, queries: java.util.List<string>, callback: any): void;
+            public listDocuments(databases: io.appwrite.services.Databases, databaseId: string, collectionId: string, queries: java.util.List<string>, callback: any): void;
+          }
         }
       }
     }

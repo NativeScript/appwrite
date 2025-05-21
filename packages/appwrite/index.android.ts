@@ -317,6 +317,58 @@ export class Account {
   }
 }
 
+export class Document {
+  private _native: io.appwrite.models.Document<Map<string, any>>;
+
+  constructor(document: io.appwrite.models.Document<Map<string, any>>) {
+    this._native = document;
+  }
+
+  get native() {
+    return this._native;
+  }
+
+  get collectionId(): string {
+    return this.native.getCollectionId();
+  }
+
+  get createdAt(): string {
+    return this.native.getCreatedAt();
+  }
+
+  get data(): Record<any, any> {
+    return Utils.dataDeserialize(this.native.getData());
+  }
+
+  get databaseId(): string {
+    return this.native.getDatabaseId();
+  }
+
+  get id(): string {
+    return this.native.getId();
+  }
+
+  get permissions(): Array<string> {
+    return Utils.dataDeserialize(this.native.getPermissions());
+  }
+
+  get updatedAt(): string {
+    return this.native.getUpdatedAt();
+  }
+
+  toJSON() {
+    return {
+      collectionId: this.collectionId,
+      createdAt: this.createdAt,
+      data: this.data,
+      databaseId: this.databaseId,
+      id: this.id,
+      permissions: this.permissions,
+      updatedAt: this.updatedAt,
+    };
+  }
+}
+
 export class Databases {
   private _native: io.appwrite.services.Databases;
 
@@ -326,6 +378,117 @@ export class Databases {
 
   get native() {
     return this._native;
+  }
+
+  public createDocument(databaseId: string, collectionId: string, documentId: string, data: Record<string, any> = {}, permissions: Array<string> = []): Promise<Document> {
+    return new Promise((resolve, reject) => {
+      org.nativescript.plugins.appwrite.Databases.createDocument(
+        this.native,
+        databaseId,
+        collectionId,
+        documentId,
+        Utils.dataSerialize(data ?? {}, true),
+        Utils.dataSerialize(permissions ?? [], true),
+        new kotlin.jvm.functions.Function2({
+          invoke(document, error) {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(new Document(document));
+            }
+          },
+        }),
+      );
+    });
+  }
+
+  public getDocument(databaseId: string, collectionId: string, documentId: string, queries: Array<string> = []): Promise<Document> {
+    return new Promise((resolve, reject) => {
+      org.nativescript.plugins.appwrite.Databases.getDocument(
+        this.native,
+        databaseId,
+        collectionId,
+        documentId,
+        Utils.dataSerialize(queries ?? [], true),
+        new kotlin.jvm.functions.Function2({
+          invoke(document, error) {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(new Document(document));
+            }
+          },
+        }),
+      );
+    });
+  }
+
+  public listDocuments(databaseId: string, collectionId: string, queries: Array<string> = []): Promise<Array<Document>> {
+    return new Promise((resolve, reject) => {
+      org.nativescript.plugins.appwrite.Databases.listDocuments(
+        this.native,
+        databaseId,
+        collectionId,
+        Utils.dataSerialize(queries ?? [], true),
+        new kotlin.jvm.functions.Function2({
+          invoke(document: java.util.List<any>, error) {
+            if (error) {
+              reject(error);
+            } else {
+              const count = document.size();
+              const ret = new Array<Document>(count);
+              for (let i = 0; i < count; i++) {
+                const doc = document.get(i);
+                ret[i] = new Document(doc);
+              }
+              resolve(ret);
+            }
+          },
+        }),
+      );
+    });
+  }
+
+  public updateDocument(databaseId: string, collectionId: string, documentId: string, data: Record<string, any>, permissions: Array<string> = []) {
+    return new Promise((resolve, reject) => {
+      org.nativescript.plugins.appwrite.Databases.updateDocument(
+        this.native,
+        databaseId,
+        collectionId,
+        documentId,
+        Utils.dataSerialize(data ?? {}, true),
+        Utils.dataSerialize(permissions ?? [], true),
+        new kotlin.jvm.functions.Function2({
+          invoke(document, error) {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(new Document(document));
+            }
+          },
+        }),
+      );
+    });
+  }
+
+  public deleteDocument(databaseId: string, collectionId: string, documentId: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      org.nativescript.plugins.appwrite.Databases.deleteDocument(
+        this.native,
+        databaseId,
+        collectionId,
+        documentId,
+        new kotlin.jvm.functions.Function2({
+          invoke(error) {
+            if (error) {
+              reject(error);
+            } else {
+              resolve();
+            }
+          },
+        }),
+      );
+    });
   }
 }
 

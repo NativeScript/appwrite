@@ -287,6 +287,58 @@ export class Account {
   }
 }
 
+export class Document {
+  private _native: NSCAppwriteDocument;
+
+  constructor(document: NSCAppwriteDocument) {
+    this._native = document;
+  }
+
+  get native() {
+    return this._native;
+  }
+
+  get collectionId(): string {
+    return this.native.collectionId;
+  }
+
+  get createdAt(): string {
+    return this.native.createdAt;
+  }
+
+  get data(): Record<any, any> {
+    return Utils.dataDeserialize(this.native.data);
+  }
+
+  get databaseId(): string {
+    return this.native.databaseId;
+  }
+
+  get id(): string {
+    return this.native.id;
+  }
+
+  get permissions(): Array<string> {
+    return Utils.dataDeserialize(this.native.permissions);
+  }
+
+  get updatedAt(): string {
+    return this.native.updatedAt;
+  }
+
+  toJSON() {
+    return {
+      collectionId: this.collectionId,
+      createdAt: this.createdAt,
+      data: this.data,
+      databaseId: this.databaseId,
+      id: this.id,
+      permissions: this.permissions,
+      updatedAt: this.updatedAt,
+    };
+  }
+}
+
 export class Databases {
   private _native: NSCAppwriteDatabases;
 
@@ -296,6 +348,75 @@ export class Databases {
 
   get native() {
     return this._native;
+  }
+
+  public createDocument(databaseId: string, collectionId: string, documentId: string, data: Record<string, any> = {}, permissions: Array<string> = []): Promise<Document> {
+    return new Promise((resolve, reject) => {
+      this.native.createDocument(databaseId, collectionId, documentId, Utils.dataSerialize(data ?? {}, true), Utils.dataSerialize(permissions ?? [], true), (document, error) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(new Document(document));
+        }
+      });
+    });
+  }
+
+  public getDocument(databaseId: string, collectionId: string, documentId: string, queries: Array<string> = []): Promise<Document> {
+    return new Promise((resolve, reject) => {
+      this.native.getDocument(databaseId, collectionId, documentId, Utils.dataSerialize(queries ?? [], true), (document, error) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(new Document(document));
+        }
+      });
+    });
+  }
+
+  public listDocuments(databaseId: string, collectionId: string, queries: Array<string> = []) {
+    return new Promise((resolve, reject) => {
+      console.log('List documents:', databaseId, collectionId, queries);
+      this.native.listDocuments(databaseId, collectionId, Utils.dataSerialize(queries ?? [], true), (documents, error) => {
+        console.log('List documents:', documents, error);
+        if (error) {
+          reject(error);
+        } else {
+          const count = documents.count;
+          const ret = new Array<Document>(count);
+          for (let i = 0; i < count; i++) {
+            const doc = documents.objectAtIndex(i);
+            ret[i] = new Document(doc);
+          }
+          console.log('Documents:', ret);
+          resolve(ret);
+        }
+      });
+    });
+  }
+
+  public updateDocument(databaseId: string, collectionId: string, documentId: string, data: Record<string, any>, permissions: Array<string> = []) {
+    return new Promise((resolve, reject) => {
+      this.native.updateDocument(databaseId, collectionId, documentId, Utils.dataSerialize(data ?? {}, true), Utils.dataSerialize(permissions ?? [], true), (document, error) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(new Document(document));
+        }
+      });
+    });
+  }
+
+  public deleteDocument(databaseId: string, collectionId: string, documentId: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.native.deleteDocument(databaseId, collectionId, documentId, (error) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve();
+        }
+      });
+    });
   }
 }
 
