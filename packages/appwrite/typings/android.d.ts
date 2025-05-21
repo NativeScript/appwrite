@@ -1,4 +1,4 @@
-export class BuildConfig {
+declare class BuildConfig {
   public static class: java.lang.Class<BuildConfig>;
   public static SDK_VERSION: string;
   public constructor();
