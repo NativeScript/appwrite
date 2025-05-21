@@ -1,0 +1,7 @@
+repositories {      
+    mavenCentral()
+}
+
+dependencies {
+    implementation "io.appwrite:sdk-for-kotlin:9.0.0"
+}
