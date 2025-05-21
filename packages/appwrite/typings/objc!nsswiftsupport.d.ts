@@ -11,6 +11,8 @@ declare class NSCAppwriteAccount extends NSObject {
 
   createAnonymousSession(callback: (p1: NSCAppwriteSession, p2: NSError) => void): void;
 
+  createSession(userId: string, secret: string, callback: (p1: NSCAppwriteSession, p2: NSError) => void): void;
+
   deleteSession(sessionId: string, callback: (p1: NSError) => void): void;
 
   initWithClient(client: NSCAppwriteClient): this;

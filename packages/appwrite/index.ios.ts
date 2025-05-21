@@ -250,6 +250,18 @@ export class Account {
     });
   }
 
+  createSession(userId: string, secret: string): Promise<Session> {
+    return new Promise((resolve, reject) => {
+      this.native.createSession(userId, secret, (session, error) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(new Session(session));
+        }
+      });
+    });
+  }
+
   createAnonymousSession(): Promise<Session> {
     return new Promise((resolve, reject) => {
       this.native.createAnonymousSession((session, error) => {

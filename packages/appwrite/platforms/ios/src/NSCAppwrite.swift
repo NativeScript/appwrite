@@ -443,6 +443,18 @@ public class NSCAppwriteAccount: NSObject {
     }
   }
   
+  public func createSession(_ userId: String, _ secret: String, _ callback: @escaping (NSCAppwriteSession?, Error?)-> Void){
+    Task {
+      do {
+        let session = try await account.createSession(userId: userId, secret: secret)
+        callback(NSCAppwriteSession(session: session), nil)
+      }catch {
+        callback(nil, error)
+      }
+    }
+  }
+  
+  
   public func deleteSession(_ sessionId: String, _ callback: @escaping (Error?)-> Void){
     Task {
       do {
