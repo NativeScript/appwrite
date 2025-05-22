@@ -677,3 +677,87 @@ export class Session {
     };
   }
 }
+
+export class Query {
+  static between(attribute: string, start: number, end: number): string;
+  static between(attribute: string, start: string, end: string): string;
+  static between(attribute: string, start: number | string, end: number | string): string {
+    return org.nativescript.plugins.appwrite.Query.between(attribute, start as never, end as never);
+  }
+
+  static contains(attribute: string, value: any): string {
+    return org.nativescript.plugins.appwrite.Query.contains(attribute, value);
+  }
+
+  static cursorAfter(id: string): string {
+    return org.nativescript.plugins.appwrite.Query.cursorAfter(id);
+  }
+
+  static cursorBefore(id: string): string {
+    return org.nativescript.plugins.appwrite.Query.cursorBefore(id);
+  }
+
+  static endsWith(attribute: string, value: string): string {
+    return org.nativescript.plugins.appwrite.Query.endsWith(attribute, value);
+  }
+
+  static equal(attribute: string, value: any): string {
+    return org.nativescript.plugins.appwrite.Query.equal(attribute, value);
+  }
+
+  static greaterThanEqual(attribute: string, value: any): string {
+    return org.nativescript.plugins.appwrite.Query.greaterThanEqual(attribute, value);
+  }
+
+  static greaterThan(attribute: string, value: any): string {
+    return org.nativescript.plugins.appwrite.Query.greaterThan(attribute, value);
+  }
+
+  static isNotNull(attribute: string): string {
+    return org.nativescript.plugins.appwrite.Query.isNotNull(attribute);
+  }
+
+  static isNull(attribute: string): string {
+    return org.nativescript.plugins.appwrite.Query.isNull(attribute);
+  }
+
+  static lessThanEqualWithAttribute(attribute: string, value: any): string {
+    return org.nativescript.plugins.appwrite.Query.lessThanEqual(attribute, value);
+  }
+
+  static lessThan(attribute: string, value: any): string {
+    return org.nativescript.plugins.appwrite.Query.lessThan(attribute, value);
+  }
+
+  static limit(limit: number): string {
+    return org.nativescript.plugins.appwrite.Query.limit(limit);
+  }
+
+  static notEqual(attribute: string, value: any): string {
+    return org.nativescript.plugins.appwrite.Query.notEqual(attribute, value);
+  }
+
+  static offset(offset: number): string {
+    return org.nativescript.plugins.appwrite.Query.offset(offset);
+  }
+
+  static orderAsc(attribute: string): string {
+    return org.nativescript.plugins.appwrite.Query.orderAsc(attribute);
+  }
+
+  static orderDesc(attribute: string): string {
+    return org.nativescript.plugins.appwrite.Query.orderDesc(attribute);
+  }
+
+  static search(attribute: string, value: string): string {
+    return org.nativescript.plugins.appwrite.Query.search(attribute, value);
+  }
+
+  static select(attributes: string[]): string {
+    return org.nativescript.plugins.appwrite.Query.select(Utils.dataSerialize(attributes, true));
+  }
+
+  static startsWith(attribute: string, value: string): string {
+    return org.nativescript.plugins.appwrite.Query.startsWith(attribute, value);
+  }
+}

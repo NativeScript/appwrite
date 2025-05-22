@@ -682,7 +682,7 @@ export class Query {
   }
 
   static select(attributes: string[]): string {
-    return NSCAppwriteQuery.select(attributes as never);
+    return NSCAppwriteQuery.select(Utils.dataSerialize(attributes, true));
   }
 
   static startsWith(attribute: string, value: string): string {
