@@ -1,6 +1,6 @@
 {
   "name": "@nativescript/appwrite",
-  "version": "0.0.3",
+  "version": "0.1.1",
   "description": "Appwrite SDK for NativeScript",
   "main": "index",
   "types": "index.d.ts",

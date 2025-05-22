@@ -17,7 +17,17 @@ APP_WRITE_ENDPOINT=https://[YOUR_APPWRITE_ENDPOINT]
 APP_WRITE_PROJECT_ID=[YOUR_APPWRITE_PROJECT_ID]
 ```
 
-Connect the client.
+Within you `webpack.config.js` you can also `npm install dotenv --save-dev` and configure it to load them:
+
+```js
+require('dotenv').config();
+
+module.exports = (env) => {
+    // rest of config
+}
+```
+
+### Connect Client
 
 ```ts
 import { Client, Account, ID } from '@nativescript/appwrite';
@@ -27,6 +37,39 @@ const client = new Client()
     .setProject(process.env.APP_WRITE_PROJECT_ID)
     .setSelfSigned(true); // for development
 const account = new Account(client);
+```
+
+### Create Account
+
+```ts
+const response = await account.create(ID.unique(), 'me@company.com', 'password');
+console.log('Account created:', response);
+```
+
+### Login
+
+```ts
+const response = await account.createEmailPasswordSession('me@company.com', 'password');console.log('Logged in:', response);
+```
+
+### List Documents
+
+```ts
+const database = new Databases(client);
+const documents = await database.listDocuments('database-id', 'collection-id');
+console.log('documents:', documents);
+```
+
+### Create Documents
+
+```ts
+const result = await database.createDocument(
+    'database-id', 
+    'collection-id',
+    crypto.randomUUID(),
+    { message: 'Hello World' }
+);
+console.log('Document created:', result);
 ```
 
 
