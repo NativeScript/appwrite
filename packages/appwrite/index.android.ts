@@ -2,6 +2,85 @@ import { Utils } from '@nativescript/core';
 
 declare const kotlin: any;
 
+export function dataDeserialize(nativeData?: any) {
+  if (nativeData === null || typeof nativeData !== 'object') {
+    return nativeData;
+  }
+  let store;
+
+  switch (nativeData.getClass().getName()) {
+    case 'java.lang.String': {
+      return String(nativeData);
+    }
+
+    case 'java.lang.Boolean': {
+      return String(nativeData) === 'true';
+    }
+
+    case 'java.lang.Float':
+    case 'java.lang.Integer':
+    case 'java.lang.Long':
+    case 'java.lang.Double':
+    case 'java.lang.Short': {
+      return Number(nativeData);
+    }
+
+    case 'org.json.JSONArray': {
+      store = [];
+      for (let j = 0; j < nativeData.length(); j++) {
+        store[j] = dataDeserialize(nativeData.get(j));
+      }
+      break;
+    }
+    case 'org.json.JSONObject': {
+      store = {};
+      const i = nativeData.keys();
+      let key;
+      while (i.hasNext()) {
+        key = i.next();
+        store[key] = dataDeserialize(nativeData.get(key));
+      }
+      break;
+    }
+
+    case 'androidx.collection.SimpleArrayMap': {
+      const count = nativeData.size();
+      for (let l = 0; l < count; l++) {
+        const key = nativeData.keyAt(l);
+        store[key] = dataDeserialize(nativeData.get(key));
+      }
+      break;
+    }
+    case 'com.google.gson.internal.LinkedTreeMap':
+    case 'androidx.collection.ArrayMap':
+    case 'android.os.Bundle':
+    case 'java.util.HashMap':
+    case 'java.util.Map': {
+      store = {};
+      const keys = nativeData.keySet().toArray();
+      for (let k = 0; k < keys.length; k++) {
+        const key = keys[k];
+        store[key] = dataDeserialize(nativeData.get(key));
+      }
+      break;
+    }
+
+    default:
+      if (typeof nativeData === 'object' && nativeData instanceof java.util.List) {
+        const array = [];
+        const size = nativeData.size();
+        for (let i = 0, n = size; i < n; i++) {
+          array[i] = dataDeserialize(nativeData.get(i));
+        }
+        store = array;
+      } else {
+        store = null;
+      }
+      break;
+  }
+  return store;
+}
+
 export class Client {
   private _native: io.appwrite.Client;
   constructor() {
@@ -148,7 +227,7 @@ export class User {
   }
 
   get labels(): Array<string> {
-    return Utils.dataDeserialize(this.native.getLabels());
+    return dataDeserialize(this.native.getLabels());
   }
 
   get mfa(): boolean {
@@ -176,7 +255,7 @@ export class User {
   }
 
   get prefs(): Record<string, any> {
-    return Utils.dataDeserialize(this.native.getPrefs);
+    return dataDeserialize(this.native.getPrefs());
   }
 
   get registration(): string {
@@ -207,7 +286,7 @@ export class User {
   }
 
   toJSON() {
-    return Utils.dataDeserialize(this.native.toMap());
+    return dataDeserialize(this.native.toMap());
   }
 }
 
@@ -337,7 +416,7 @@ export class Document {
   }
 
   get data(): Record<any, any> {
-    return Utils.dataDeserialize(this.native.getData());
+    return dataDeserialize(this.native.getData());
   }
 
   get databaseId(): string {
@@ -349,7 +428,7 @@ export class Document {
   }
 
   get permissions(): Array<string> {
-    return Utils.dataDeserialize(this.native.getPermissions());
+    return dataDeserialize(this.native.getPermissions());
   }
 
   get updatedAt(): string {
@@ -584,7 +663,7 @@ export class Session {
   }
 
   get factors(): Array<string> {
-    return Utils.dataDeserialize(this.native.getFactors());
+    return dataDeserialize(this.native.getFactors());
   }
 
   get id(): string {
