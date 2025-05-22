@@ -376,9 +376,7 @@ export class Databases {
 
   public listDocuments(databaseId: string, collectionId: string, queries: Array<string> = []) {
     return new Promise((resolve, reject) => {
-      console.log('List documents:', databaseId, collectionId, queries);
       this.native.listDocuments(databaseId, collectionId, Utils.dataSerialize(queries ?? [], true), (documents, error) => {
-        console.log('List documents:', documents, error);
         if (error) {
           reject(error);
         } else {
@@ -388,7 +386,6 @@ export class Databases {
             const doc = documents.objectAtIndex(i);
             ret[i] = new Document(doc);
           }
-          console.log('Documents:', ret);
           resolve(ret);
         }
       });
@@ -603,5 +600,92 @@ export class Session {
       updatedAt: this.updatedAt,
       userId: this.userId,
     };
+  }
+}
+
+export class Query {
+  static between(attribute: string, start: number, end: number): string;
+  static between(attribute: string, start: string, end: string): string;
+  static between(attribute: string, start: number | string, end: number | string): string {
+    if (typeof start === 'number' && typeof end === 'number') {
+      return NSCAppwriteQuery.betweenStartEnd(attribute, start, end);
+    }
+    return NSCAppwriteQuery.betweenStartSEndS(attribute, start as string, end as string);
+  }
+
+  static contains(attribute: string, value: any): string {
+    return NSCAppwriteQuery.containsValue(attribute, value);
+  }
+
+  static cursorAfter(id: string): string {
+    return NSCAppwriteQuery.cursorAfter(id);
+  }
+
+  static cursorBefore(id: string): string {
+    return NSCAppwriteQuery.cursorBefore(id);
+  }
+
+  static endsWith(attribute: string, value: string): string {
+    return NSCAppwriteQuery.endsWithValue(attribute, value);
+  }
+
+  static equal(attribute: string, value: any): string {
+    return NSCAppwriteQuery.equalValue(attribute, value);
+  }
+
+  static greaterThanEqual(attribute: string, value: any): string {
+    return NSCAppwriteQuery.greaterThanEqualValue(attribute, value);
+  }
+
+  static greaterThan(attribute: string, value: any): string {
+    return NSCAppwriteQuery.greaterThanValue(attribute, value);
+  }
+
+  static isNotNull(attribute: string): string {
+    return NSCAppwriteQuery.isNotNull(attribute);
+  }
+
+  static isNull(attribute: string): string {
+    return NSCAppwriteQuery.isNull(attribute);
+  }
+
+  static lessThanEqualWithAttribute(attribute: string, value: any): string {
+    return NSCAppwriteQuery.lessThanEqualWithAttributeValue(attribute, value);
+  }
+
+  static lessThan(attribute: string, value: any): string {
+    return NSCAppwriteQuery.lessThanValue(attribute, value);
+  }
+
+  static limit(limit: number): string {
+    return NSCAppwriteQuery.limit(limit);
+  }
+
+  static notEqual(attribute: string, value: any): string {
+    return NSCAppwriteQuery.notEqualValue(attribute, value);
+  }
+
+  static offset(offset: number): string {
+    return NSCAppwriteQuery.offset(offset);
+  }
+
+  static orderAsc(attribute: string): string {
+    return NSCAppwriteQuery.orderAsc(attribute);
+  }
+
+  static orderDesc(attribute: string): string {
+    return NSCAppwriteQuery.orderDesc(attribute);
+  }
+
+  static search(attribute: string, value: string): string {
+    return NSCAppwriteQuery.searchValue(attribute, value);
+  }
+
+  static select(attributes: string[]): string {
+    return NSCAppwriteQuery.select(attributes as never);
+  }
+
+  static startsWith(attribute: string, value: string): string {
+    return NSCAppwriteQuery.startsWithValue(attribute, value);
   }
 }

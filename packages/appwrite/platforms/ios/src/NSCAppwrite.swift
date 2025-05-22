@@ -37,8 +37,11 @@ public class NSCAppwriteFunctions: NSObject {
 public class NSCAppwriteDocument: NSObject {
   internal var document: Document<[String: AnyCodable]>!
   
-  init(document: Document<[String: AnyCodable]>) {
+  public let jsonData: NSCAppwriteJSONValue!
+  
+  init(document: Document<[String: AnyCodable]>, jsonData: NSCAppwriteJSONValue) {
     self.document = document
+    self.jsonData = jsonData
   }
   
   public var id: String {
@@ -66,10 +69,111 @@ public class NSCAppwriteDocument: NSObject {
   }
 
   public var data: NSDictionary {
-    return NSDictionary(dictionary: document.data)
+    return jsonData.value as? NSDictionary ?? [:]
   }
+  
 }
 
+
+@objcMembers
+@objc(NSCAppwriteQuery)
+public class NSCAppwriteQuery: NSObject {
+  public static func equal(_ attribute: String, value: Any) -> String {
+    return Query.equal(attribute, value: value)
+  }
+
+  public static func notEqual(_ attribute: String, value: Any) -> String {
+    return Query.notEqual(attribute, value: value)
+  }
+
+  public static func lessThan(_ attribute: String, value: Any) -> String {
+    return Query.lessThan(attribute, value: value)
+  }
+
+  public static func lessThanEqual(attribute: String, value: Any) -> String {
+    return Query.lessThanEqual(attribute: attribute, value: value)
+  }
+
+  public static func greaterThan(_ attribute: String, value: Any) -> String {
+    return Query.greaterThan(attribute, value: value)
+  }
+
+  public static func greaterThanEqual(_ attribute: String, value: Any) -> String {
+    return Query.greaterThanEqual(attribute, value: value)
+  }
+
+  public static func isNull(_ attribute: String) -> String {
+    return Query.isNull(attribute)
+  }
+
+  public static func isNotNull(_ attribute: String) -> String {
+    return Query.isNotNull(attribute)
+  }
+
+  public static func between(_ attribute: String, start: Int, end: Int) -> String {
+    return Query.between(attribute, start: start, end: end)
+  }
+
+  public static func between(_ attribute: String, startD: Double, endD: Double) -> String {
+    return Query.between(attribute, start: startD, end: endD)
+  }
+
+  public static func between(_ attribute: String, startS: String, endS: String) -> String {
+    return Query.between(attribute, start: startS, end: endS)
+  }
+
+  public static func startsWith(_ attribute: String, value: String) -> String {
+    return Query.startsWith(attribute, value: value)
+  }
+
+  public static func endsWith(_ attribute: String, value: String) -> String {
+    return Query.endsWith(attribute, value: value)
+  }
+
+  public static func select(_ attributes: [String]) -> String {
+    return Query.select(attributes)
+  }
+
+  public static func search(_ attribute: String, value: String) -> String {
+    return Query.search(attribute, value: value)
+  }
+
+  public static func orderAsc(_ attribute: String) -> String {
+    return Query.orderAsc(attribute)
+  }
+
+  public static func orderDesc(_ attribute: String) -> String {
+    return Query.orderDesc(attribute)
+  }
+
+  public static func cursorBefore(_ id: String) -> String {
+    return Query.cursorBefore(id)
+  }
+
+  public static func cursorAfter(_ id: String) -> String {
+    return Query.cursorAfter(id)
+  }
+
+  public static func limit(_ limit: Int) -> String {
+    return Query.limit(limit)
+  }
+
+  public static func offset(_ offset: Int) -> String {
+    return Query.limit(offset)
+  }
+
+  public static func contains(_ attribute: String, value: Any) -> String {
+    return Query.contains(attribute, value: value)
+  }
+
+  public static func or(_ queries: [String]) -> String {
+    return Query.or(queries)
+  }
+
+  public static func and(_ queries: [String]) -> String {
+    return Query.and(queries)
+  }
+}
 
 @objcMembers
 @objc(NSCAppwriteDatabases)
@@ -80,11 +184,12 @@ public class NSCAppwriteDatabases: NSObject {
     self.databases = Databases(client.client)
   }
   
-  public func createDocument(_ databaseId: String, _ collectionId: String, _ documentId: String, _ data: [String: AnyHashable], _ permissions: [String]? = nil, _ callback: @escaping (NSCAppwriteDocument?, Error?) -> Void){
+  public func createDocument(_ databaseId: String, _ collectionId: String, _ documentId: String, _ data: [String: Any], _ permissions: [String]? = nil, _ callback: @escaping (NSCAppwriteDocument?, Error?) -> Void){
     Task {
       do {
         let document = try await databases.createDocument(databaseId: databaseId, collectionId: collectionId, documentId: documentId, data: data, permissions: permissions)
-        callback(NSCAppwriteDocument(document: document), nil)
+        let json = NSCAppwriteJSONValue(decodableObject: document.data)
+        callback(NSCAppwriteDocument(document: document, jsonData: json), nil)
       }catch {
         callback(nil, error)
       }
@@ -96,7 +201,8 @@ public class NSCAppwriteDatabases: NSObject {
       
       do {
         let document = try await databases.getDocument(databaseId: databaseId, collectionId: collectionId, documentId: documentId, queries: queries)
-        callback(NSCAppwriteDocument(document: document), nil)
+        let json = NSCAppwriteJSONValue(decodableObject: document.data)
+        callback(NSCAppwriteDocument(document: document, jsonData: json), nil)
       }catch {
         callback(nil, error)
       }
@@ -109,7 +215,10 @@ public class NSCAppwriteDatabases: NSObject {
       
       do {
         let list = try await databases.listDocuments(databaseId: databaseId, collectionId: collectionId, queries: queries)
-        callback(list.documents.map { NSCAppwriteDocument(document: $0) }, nil)
+        callback(list.documents.map {
+          let json = NSCAppwriteJSONValue(decodableObject: $0.data)
+          return NSCAppwriteDocument(document: $0, jsonData: json)
+        }, nil)
       }catch {
         callback(nil, error)
       }
@@ -122,7 +231,8 @@ public class NSCAppwriteDatabases: NSObject {
     Task {
       do {
         let document = try await databases.updateDocument(databaseId: databaseId, collectionId: collectionId, documentId: documentId, data: data, permissions: permissions)
-        callback(NSCAppwriteDocument(document: document), nil)
+        let json = NSCAppwriteJSONValue(decodableObject: document.data)
+        callback(NSCAppwriteDocument(document: document, jsonData: json), nil)
       }catch {
         callback(nil, error)
       }
@@ -134,7 +244,7 @@ public class NSCAppwriteDatabases: NSObject {
     Task {
       
       do {
-        let document = try await databases.deleteDocument(databaseId: databaseId, collectionId: collectionId, documentId: documentId)
+        let _ = try await databases.deleteDocument(databaseId: databaseId, collectionId: collectionId, documentId: documentId)
         callback(nil)
       }catch {
         callback(error)

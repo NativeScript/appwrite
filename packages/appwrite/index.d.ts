@@ -229,3 +229,47 @@ export declare class Session {
 
   readonly userId: string;
 }
+
+export declare class Query {
+  static between(attribute: string, start: number, end: number): string;
+
+  static between(attribute: string, start: string, end: string): string;
+
+  static contains(attribute: string, value: any): string;
+
+  static cursorAfter(id: string): string;
+
+  static cursorBefore(id: string): string;
+
+  static endsWith(attribute: string, value: string): string;
+
+  static equal(attribute: string, value: any): string;
+
+  static greaterThanEqual(attribute: string, value: any): string;
+
+  static greaterThan(attribute: string, value: any): string;
+
+  static isNotNull(attribute: string): string;
+
+  static isNull(attribute: string): string;
+
+  static lessThanEqualWithAttribute(attribute: string, value: any): string;
+
+  static lessThan(attribute: string, value: any): string;
+
+  static limit(limit: number): string;
+
+  static notEqual(attribute: string, value: any): string;
+
+  static offset(offset: number): string;
+
+  static orderAsc(attribute: string): string;
+
+  static orderDesc(attribute: string): string;
+
+  static search(attribute: string, value: string): string;
+
+  static select(attributes: string[]): string;
+
+  static startsWith(attribute: string, value: string): string;
+}

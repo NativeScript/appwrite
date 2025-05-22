@@ -49,7 +49,7 @@ declare class NSCAppwriteDatabases extends NSObject {
 
   constructor();
 
-  createDocument(databaseId: string, collectionId: string, documentId: string, data: NSDictionary<string, NSObject>, permissions: NSArray<string> | string[], callback: (p1: NSCAppwriteDocument, p2: NSError) => void): void;
+  createDocument(databaseId: string, collectionId: string, documentId: string, data: NSDictionary<string, any>, permissions: NSArray<string> | string[], callback: (p1: NSCAppwriteDocument, p2: NSError) => void): void;
 
   deleteDocument(databaseId: string, collectionId: string, documentId: string, callback: (p1: NSError) => void): void;
 
@@ -76,6 +76,8 @@ declare class NSCAppwriteDocument extends NSObject {
   readonly databaseId: string;
 
   readonly id: string;
+
+  readonly jsonData: NSCAppwriteJSONValue;
 
   readonly permissions: NSArray<string>;
 
@@ -154,6 +156,56 @@ declare class NSCAppwriteJSONValue extends NSObject {
   initWithObject(object: NSDictionary<string, NSCAppwriteJSONValue>): this;
 
   initWithString(string: string): this;
+}
+
+declare class NSCAppwriteQuery extends NSObject {
+  static alloc(): NSCAppwriteQuery; // inherited from NSObject
+
+  static betweenStartDEndD(attribute: string, startD: number, endD: number): string;
+
+  static betweenStartEnd(attribute: string, start: number, end: number): string;
+
+  static betweenStartSEndS(attribute: string, startS: string, endS: string): string;
+
+  static containsValue(attribute: string, value: any): string;
+
+  static cursorAfter(id: string): string;
+
+  static cursorBefore(id: string): string;
+
+  static endsWithValue(attribute: string, value: string): string;
+
+  static equalValue(attribute: string, value: any): string;
+
+  static greaterThanEqualValue(attribute: string, value: any): string;
+
+  static greaterThanValue(attribute: string, value: any): string;
+
+  static isNotNull(attribute: string): string;
+
+  static isNull(attribute: string): string;
+
+  static lessThanEqualWithAttributeValue(attribute: string, value: any): string;
+
+  static lessThanValue(attribute: string, value: any): string;
+
+  static limit(limit: number): string;
+
+  static new(): NSCAppwriteQuery; // inherited from NSObject
+
+  static notEqualValue(attribute: string, value: any): string;
+
+  static offset(offset: number): string;
+
+  static orderAsc(attribute: string): string;
+
+  static orderDesc(attribute: string): string;
+
+  static searchValue(attribute: string, value: string): string;
+
+  static select(attributes: NSArray<string> | string[]): string;
+
+  static startsWithValue(attribute: string, value: string): string;
 }
 
 declare class NSCAppwriteSession extends NSObject {

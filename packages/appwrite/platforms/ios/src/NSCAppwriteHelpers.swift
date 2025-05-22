@@ -13,6 +13,18 @@ typealias NSCAppwriteJSONObject = [String: NSCAppwriteJSONValue]
 typealias NSCAppwriteJSONArray = [NSCAppwriteJSONValue]
 
 
+private enum ValueType {
+  case Null
+  case Boolean
+  case Double
+  case Integer
+  case String
+  case Date
+  case Data
+  case Array
+  case Object
+}
+
 @objcMembers
 @objc(NSCAppwriteJSONValue)
 public class NSCAppwriteJSONValue: NSObject, Encodable, Decodable {
@@ -48,6 +60,121 @@ public class NSCAppwriteJSONValue: NSObject, Encodable, Decodable {
   
   
   public override init() {}
+  
+  
+  private static func objcValue(from anyCodable: AnyCodable, wrap: Bool = false) -> (Any, ValueType) {
+    var ret: (Any, ValueType) = (NSNull(), .Null)
+    switch anyCodable.value {
+    case let dict as [String: AnyCodable]:
+      var objcDict: [String: NSCAppwriteJSONValue] = [:]
+        for (key, value) in dict {
+          objcDict[key] = objcValue(from: value, wrap:  true).0 as? NSCAppwriteJSONValue
+        }
+      ret.0 = NSCAppwriteJSONValue(object: objcDict)
+      ret.1 = .Object
+      break
+    case let array as [AnyCodable]:
+      var objcArray: [NSCAppwriteJSONValue] = []
+        for value in array {
+          objcArray.append(objcValue(from: value, wrap: true).0 as! NSCAppwriteJSONValue)
+        }
+      
+      ret.0 = NSCAppwriteJSONValue(array: objcArray)
+      ret.1 = .Array
+      break
+    case let str as String:
+      if(wrap){
+        ret.0 = NSCAppwriteJSONValue(string: str)
+      }else {
+        ret.0 = str
+      }
+      ret.1 = .String
+      break
+    case let num as NSNumber:
+      if(wrap){
+        ret.0 = NSCAppwriteJSONValue(double: Double(truncating: num))
+      }else {
+        ret.0 = Double(truncating: num)
+      }
+      ret.1 = .Double
+      break
+    case let bool as Bool:
+       if(wrap){
+         ret.0 = NSCAppwriteJSONValue(boolean: bool)
+      }else {
+        ret.0 = bool
+      }
+      ret.1 = .Boolean
+      break
+    case let int as Int:
+      if(wrap){
+        ret.0 = NSCAppwriteJSONValue(integer: int)
+      }else {
+        ret.0 = int
+      }
+      ret.1 = .Integer
+      break
+    case let double as Double:
+      if(wrap){
+        ret.0 = NSCAppwriteJSONValue(double: double)
+      }
+        else {
+          ret.0 =  double
+        }
+        ret.1 = .Double
+        break
+    case _ as NSNull:
+        if(wrap){
+          ret.0 =  NSCAppwriteJSONValue()
+        } else {
+          ret.0 = NSNull()
+        }
+        ret.1 = .Null
+        break
+    default:
+        if(wrap){
+          ret.0 =  NSCAppwriteJSONValue()
+        } else {
+          ret.0 = NSNull()
+        }
+        ret.1 = .Null
+        break
+    }
+    return ret
+}
+  
+  public init(decodable: AnyCodable) {
+    let (objcValue, valueType) = NSCAppwriteJSONValue.objcValue(from: decodable)
+    switch valueType {
+    case .Boolean:
+      self.boolValue = objcValue as? Bool
+    case .Double:
+      self.doubleValue = objcValue as? Double
+    case .Integer:
+      self.integerValue = objcValue as? Int
+    case .String:
+      self.stringValue = objcValue as? String
+    case .Date:
+      self.dateValue = objcValue as? Date
+    case .Data:
+      self.dataValue = objcValue as? Data
+    case .Array:
+      self.arrayValue = objcValue as? NSCAppwriteJSONArray
+    case .Object:
+      self.objectValue = objcValue as? NSCAppwriteJSONObject
+    case .Null:
+      // noop
+      break
+    }
+  }
+  
+  
+  public init(decodableObject: [String: AnyCodable]) {
+    self.objectValue = decodableObject.mapValues { value  in
+      NSCAppwriteJSONValue(decodable: value)
+    }
+  }
+  
   
   public init(boolean: Bool){
     self.boolValue = boolean
